@@ -23,7 +23,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const loadDashboard = () => {
-      fetchWithAuth('http://localhost:5000/api/dashboard').then((res) => res.json()).then((result) => { if (!result.error) setData(result); }).catch(console.error);
+      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/dashboard').then((res) => res.json()).then((result) => { if (!result.error) setData(result); }).catch(console.error);
     };
 
     loadDashboard();
@@ -32,7 +32,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:5000/api/jobs').then((res) => res.json()).then((jobs) => { if (Array.isArray(jobs)) setRecommendedJobs(jobs.slice(0, 3)); }).catch(console.error);
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/jobs').then((res) => res.json()).then((jobs) => { if (Array.isArray(jobs)) setRecommendedJobs(jobs.slice(0, 3)); }).catch(console.error);
   }, []);
 
   if (!data) return <div className="dashboard-loading"><Sparkles size={18} /> Preparing your workspace...</div>;

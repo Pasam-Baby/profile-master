@@ -53,7 +53,7 @@ export default function InterviewPrep() {
   const [topics, setTopics] = useState([]);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:5000/api/resume').then(response => response.json()).then(data => {
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume').then(response => response.json()).then(data => {
       setResume(data || {});
       const resumeSkills = (data?.skills || '').split(',').map(skill => skill.trim()).filter(Boolean);
       setSkills(resumeSkills);
@@ -66,7 +66,7 @@ export default function InterviewPrep() {
     const localTopics = TOPIC_MAP[normalize(selectedSkill)] || [selectedSkill, 'Fundamentals', 'Common interview questions', 'Practical usage', 'Troubleshooting'];
     setTopics(localTopics);
     setSelectedTopic(localTopics[0]);
-    fetchWithAuth(`http://localhost:5000/api/interview?topic=${encodeURIComponent(selectedSkill)}`).then(response => response.json()).then(data => setQuestionBank(Array.isArray(data) && data.length ? data : [fallbackQuestion(selectedSkill, localTopics[0], candidateType === 'Experienced')])).catch(() => setQuestionBank([fallbackQuestion(selectedSkill, localTopics[0], candidateType === 'Experienced')]));
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/interview?topic=${encodeURIComponent(selectedSkill)}`).then(response => response.json()).then(data => setQuestionBank(Array.isArray(data) && data.length ? data : [fallbackQuestion(selectedSkill, localTopics[0], candidateType === 'Experienced')])).catch(() => setQuestionBank([fallbackQuestion(selectedSkill, localTopics[0], candidateType === 'Experienced')]));
   }, [selectedSkill, candidateType]);
 
   const roadmap = candidateType === 'Fresher' ? ROADMAP_FRESHER : ROADMAP_EXPERIENCED;

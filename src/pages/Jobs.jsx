@@ -9,7 +9,7 @@ const JobCard = ({ job, saved, onSave, onApply, onTrack }) => {
   const [matchData, setMatchData] = useState(null);
 
   useEffect(() => {
-    fetchWithAuth(`http://localhost:5000/api/match/${job.id}`)
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/match/${job.id}`)
       .then(res => res.json())
       .then(data => setMatchData(data))
       .catch(err => console.error(err));
@@ -38,14 +38,14 @@ export default function Jobs() {
 
   useEffect(() => {
     fetchJobs();
-    fetchWithAuth('http://localhost:5000/api/saved_jobs').then(res => res.json()).then(data => setSavedIds(Array.isArray(data) ? data.map(job => job.id) : [])).catch(() => setSavedIds([]));
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/saved_jobs').then(res => res.json()).then(data => setSavedIds(Array.isArray(data) ? data.map(job => job.id) : [])).catch(() => setSavedIds([]));
   }, []);
 
   const fetchJobs = (query = search, nextFilters = filters) => {
     const params = new URLSearchParams();
     if (query) params.set('search', query);
     Object.entries(nextFilters).forEach(([key, value]) => value && params.set(key, value));
-    fetchWithAuth(`http://localhost:5000/api/jobs${params.toString() ? `?${params.toString()}` : ''}`)
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/jobs${params.toString() ? `?${params.toString()}` : ''}`)
       .then(res => res.json())
       .then(data => setJobs(data))
       .catch(err => console.error(err));
@@ -59,10 +59,10 @@ export default function Jobs() {
   const changeFilter = (key, value) => { const next = { ...filters, [key]: value }; setFilters(next); fetchJobs(search, next); };
   const toggleSave = id => {
     const saved = savedIds.includes(id);
-    fetchWithAuth(saved ? `http://localhost:5000/api/saved_jobs/${id}` : 'http://localhost:5000/api/saved_jobs', { method: saved ? 'DELETE' : 'POST', body: saved ? undefined : JSON.stringify({ job_id: id }) }).then(() => setSavedIds(ids => saved ? ids.filter(savedId => savedId !== id) : [...ids, id]));
+    fetchWithAuth(saved ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/saved_jobs/${id}` : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/saved_jobs', { method: saved ? 'DELETE' : 'POST', body: saved ? undefined : JSON.stringify({ job_id: id }) }).then(() => setSavedIds(ids => saved ? ids.filter(savedId => savedId !== id) : [...ids, id]));
   };
-  const apply = id => fetchWithAuth('http://localhost:5000/api/applications', { method: 'POST', body: JSON.stringify({ job_id: id, status: 'Applied', source: 'ProfileMaster Jobs' }) }).then(() => setMessage('Application added to your tracker.'));
-  const track = id => fetchWithAuth('http://localhost:5000/api/applications', { method: 'POST', body: JSON.stringify({ job_id: id, status: 'Saved', source: 'ProfileMaster Jobs' }) }).then(() => setMessage('Job added to your application pipeline.'));
+  const apply = id => fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications', { method: 'POST', body: JSON.stringify({ job_id: id, status: 'Applied', source: 'ProfileMaster Jobs' }) }).then(() => setMessage('Application added to your tracker.'));
+  const track = id => fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications', { method: 'POST', body: JSON.stringify({ job_id: id, status: 'Saved', source: 'ProfileMaster Jobs' }) }).then(() => setMessage('Job added to your application pipeline.'));
 
   return (
     <div className="jobs-page"><header className="jobs-header"><div><span className="section-kicker"><BriefcaseBusiness size={14} /> Opportunity board</span><h1>Find Your <em>Next Opportunity</em></h1><p>Discover jobs that match your skills, goals and profile.</p></div><div className="jobs-header-mark"><Building2 size={24} /></div></header>

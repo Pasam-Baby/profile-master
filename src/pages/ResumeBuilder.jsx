@@ -31,7 +31,7 @@ function LegacyResumeBuilder() {
   const previewRef = useRef(null);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:5000/api/resume')
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume')
       .then(res => res.json())
       .then(data => {
         if (data.id) {
@@ -103,7 +103,7 @@ function LegacyResumeBuilder() {
       certifications: `${formData.certifications}${formData.achievements ? `||ACHIEVEMENTS||${formData.achievements}` : ''}${formData.languages ? `||LANGUAGES||${formData.languages}` : ''}`
     };
     
-    fetchWithAuth('http://localhost:5000/api/resume', {
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -529,11 +529,11 @@ export default function ResumeBuilder() {
   const [jobSuggestion, setJobSuggestion] = useState(null);
 
   useEffect(() => {
-    fetchWithAuth('http://localhost:5000/api/resume').then(response => response.json()).then(data => {
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume').then(response => response.json()).then(data => {
       if (data.profile_json) { try { setProfile({ ...EMPTY_PROFILE, ...JSON.parse(data.profile_json) }); } catch { setProfile(parseLegacyProfile(data)); } }
       else if (data.id) setProfile(parseLegacyProfile(data));
     }).catch(error => console.error('Error fetching resume:', error)).finally(() => setLoading(false));
-    fetchWithAuth('http://localhost:5000/api/jobs').then(response => response.json()).then(data => setJobs(Array.isArray(data) ? data : [])).catch(() => setJobs([]));
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/jobs').then(response => response.json()).then(data => setJobs(Array.isArray(data) ? data : [])).catch(() => setJobs([]));
   }, []);
 
   const update = (key, value) => { setProfile(current => ({ ...current, [key]: value })); setSaved(false); };
@@ -543,7 +543,7 @@ export default function ResumeBuilder() {
     const experiences = (profile.experiences || []).map(experience => [experience.company, experience.role, experience.duration, experience.location, (experience.bullets || []).filter(Boolean).join('\n')].filter(Boolean).join(' | ')).join('\n\n');
     const certifications = (profile.certifications || []).map(certification => [certification.name, certification.issuer, certification.date, certification.link].filter(Boolean).join(' | ')).join('\n');
     const payload = { name: profile.name, email: profile.email, phone: profile.phone, objective: profile.summary, education: profile.education, skills: profile.skills, projects: `${projects}${experiences ? `||INTERNSHIPS||${experiences}` : ''}`, certifications: `${certifications}${profile.achievements ? `||ACHIEVEMENTS||${profile.achievements}` : ''}${profile.languages ? `||LANGUAGES||${profile.languages}` : ''}`, location: profile.location, linkedin: profile.linkedin, github: profile.github, portfolio: profile.portfolio, target_role: profile.target_role, profile_json: JSON.stringify(profile) };
-    fetchWithAuth('http://localhost:5000/api/resume', { method: 'POST', body: JSON.stringify(payload) }).then(response => response.json()).then(() => { setSaved(true); window.dispatchEvent(new Event('resume-updated')); setTimeout(() => setSaved(false), 2500); }).catch(error => console.error('Error saving resume:', error));
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume', { method: 'POST', body: JSON.stringify(payload) }).then(response => response.json()).then(() => { setSaved(true); window.dispatchEvent(new Event('resume-updated')); setTimeout(() => setSaved(false), 2500); }).catch(error => console.error('Error saving resume:', error));
   };
   const updateTemplate = value => { setTemplate(value); localStorage.setItem('profile_master_resume_template', value); };
   const skills = (profile.skills || '').split(',').map(skill => skill.trim()).filter(Boolean);

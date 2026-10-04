@@ -14,13 +14,13 @@ export default function SkillAnalysis() {
   const [matchData, setMatchData] = useState(null);
 
   useEffect(() => {
-    fetchWithAuth(`http://localhost:5000/api/jobs/${id}`)
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/jobs/${id}`)
       .then(res => res.json())
       .then(data => {
         if (!data.error) setJob(data);
       });
 
-    fetchWithAuth(`http://localhost:5000/api/match/${id}`)
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/match/${id}`)
       .then(res => res.json())
       .then(data => setMatchData(data));
   }, [id]);

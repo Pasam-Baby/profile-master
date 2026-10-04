@@ -44,8 +44,8 @@ export default function ApplicationTracker() {
   const refresh = () => {
     setLoading(true);
     Promise.all([
-      fetchWithAuth('http://localhost:5000/api/applications').then(res => res.json()),
-      fetchWithAuth('http://localhost:5000/api/applications/analytics').then(res => res.json())
+      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications').then(res => res.json()),
+      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications/analytics').then(res => res.json())
     ]).then(([data, stats]) => {
       setApplications(Array.isArray(data) ? data : []);
       setAnalytics(stats || { by_status: {}, by_source: {}, by_month: {}, interview_conversion: 0 });
@@ -53,7 +53,7 @@ export default function ApplicationTracker() {
   };
 
   const updateApplication = (appId, payload) => {
-    fetchWithAuth(`http://localhost:5000/api/applications/${appId}`, {
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications/${appId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -66,7 +66,7 @@ export default function ApplicationTracker() {
   const updateStatus = (appId, status) => updateApplication(appId, { status });
   const deleteApplication = (appId) => {
     if (!window.confirm('Delete this application?')) return;
-    fetchWithAuth(`http://localhost:5000/api/applications/${appId}`, { method: 'DELETE' })
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications/${appId}`, { method: 'DELETE' })
       .then(() => { setSelected(null); refresh(); });
   };
 

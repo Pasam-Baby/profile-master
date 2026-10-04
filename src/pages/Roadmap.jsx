@@ -20,7 +20,7 @@ export default function Roadmap() {
     const params = new URLSearchParams();
     if (nextCategory !== 'All') params.set('category', nextCategory);
     if (nextSearch.trim()) params.set('search', nextSearch.trim());
-    fetchWithAuth(`http://localhost:5000/api/roadmap/career-matches${params.toString() ? `?${params}` : ''}`)
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/roadmap/career-matches${params.toString() ? `?${params}` : ''}`)
       .then((response) => response.json())
       .then((result) => {
         if (!result.error) {
@@ -33,10 +33,10 @@ export default function Roadmap() {
   };
 
   const loadSupportingData = () => Promise.all([
-    fetchWithAuth('http://localhost:5000/api/resume').then((response) => response.json()),
-    fetchWithAuth('http://localhost:5000/api/dashboard').then((response) => response.json()),
-    fetchWithAuth('http://localhost:5000/api/jobs').then((response) => response.json()),
-    fetchWithAuth('http://localhost:5000/api/applications').then((response) => response.json()),
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume').then((response) => response.json()),
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/dashboard').then((response) => response.json()),
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/jobs').then((response) => response.json()),
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications').then((response) => response.json()),
   ]).then(([resume, dashboard, jobs, applications]) => setSupporting({ resume, dashboard, jobs: Array.isArray(jobs) ? jobs : [], applications: Array.isArray(applications) ? applications : [] })).catch(() => setSupporting((current) => current));
 
   const refreshRoadmap = () => {

@@ -29,7 +29,7 @@ export default function Navigation() {
     e.preventDefault();
     setMsg({ text: 'Saving...', type: 'info' });
     try {
-      const res = await fetch('http://localhost:5000/api/user/profile', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/user/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export default function Navigation() {
     }
     setMsg({ text: 'Updating...', type: 'info' });
     try {
-      const res = await fetch('http://localhost:5000/api/user/password', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/user/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
