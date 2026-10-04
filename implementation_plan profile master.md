@@ -1,67 +1,53 @@
 # Profile Master - Smart Career Assistant
 
-This implementation plan outlines the development of a full-stack AI-powered web application designed to help users analyze and optimize their resumes, detect skill gaps, and strategize their career paths using React, TypeScript, and Firebase.
-
-## User Review Required
-
-> [!IMPORTANT]
-> **OpenRouter/OpenAI API Keys**: We will need an AI provider key to implement the advanced AI features (Resume Analyzer, Job Matching, Chat Assistant). Do you have an OpenAI or OpenRouter API key available to supply in the environment variables?
-> **Firebase Project**: I will initialize the frontend with placeholders for Firebase config. Alternatively, I can help you set up a Firebase project and insert the real config. Which do you prefer?
-> 
-> Please review the architecture and testing strategies below and approve so we can begin execution!
+This document outlines the architecture, features, and recent updates of the Profile Master full-stack web application. The application is designed to help users manage their profiles, analyze skills, and strategize their career paths.
 
 ## Architecture Overview
 
-We will adopt a Clean Architecture pattern, using a component-based structure, Context API for state management, and a dedicated Service Layer over specialized "Agents".
+We have adopted a component-based frontend structure and a lightweight REST API backend.
 
-- **Frontend Framework**: React 18 with Vite and TypeScript.
-- **Styling**: Tailwind CSS for modern, responsive aesthetics (with smooth animations and glassmorphism hints).
-- **Backend/BaaS**: Firebase (Auth, Firestore, Storage) to handle user data, resume uploads, and job application tracking.
-- **Agent Orchestrator Model**: We will implement pure TypeScript logic agents (`ResumeAgent`, `JobAgent`, `CareerAgent`) orchestrated by a central `AgentOrchestrator` to interface with the AI services.
+- **Frontend Framework**: React 18 with Vite. (JavaScript/JSX with TypeScript configuration support).
+- **Styling**: Pure CSS (using `index.css` and local stylesheets) for a highly customized, glassmorphism-inspired aesthetic and smooth animations.
+- **Backend**: Python Flask REST API (`backend/app.py`).
+- **Database**: SQLite3 for lightweight, serverless local data persistence.
+- **Authentication**: Custom authentication using SQLite and `werkzeug.security` for password hashing. Frontend state is managed via `AuthContext.jsx`.
 
-## Proposed Changes & Phased Execution
+## Implemented Features & Updates
 
-### Phase 1: Project Setup & Foundation
-- Initialize a **Vite + React + TypeScript** project.
-- Install and configure **Tailwind CSS**.
-- Establish the folder structure (`/src/components`, `/src/services`, `/src/agents`, `/src/pages`, `/src/context`).
-- Configure Firebase app initialization and Authentication contexts.
+### 1. Project Setup & Foundation
+- Setup Vite + React frontend environment.
+- Setup Flask + SQLite backend environment.
+- Resolved build and linting errors (added missing `typescript-eslint` dependencies).
+- Cleaned up unused Vite boilerplate files (e.g. `src/assets/react.svg`, `src/assets/vite.svg`).
 
-### Phase 2: Core Routing & Auth
-- Build **Google Sign-In** implementation and protected routes.
-- Create Navigation/Sidebar components.
-- Develop the initial aesthetic User Dashboard layout with placeholder stats.
+### 2. Core Routing & Navigation
+- Implemented protected routes (`<ProtectedRoute>`) requiring authentication.
+- Created `Navigation.jsx` for sidebar routing across major pages (Dashboard, Resume, Jobs, etc).
+- Integrated `AuthContext` to manage user state, login/logout mechanisms, and localStorage persistence.
 
-### Phase 3: Service Layer & Agent Architecture
-- Implement `ai.service.ts` to connect to OpenAI/OpenRouter APIs.
-- Implement specialized agents:
-  - `ResumeAgent`: Handles document parsing and delegates analysis/rewriting to the AI service.
-  - `JobAgent`: Manages job matching based on resume context.
-  - `CareerAgent`: Generates roadmaps.
-- Implement an `AgentOrchestrator` to queue, rate-limit, and delegate user tasks to these agents.
-- Handle Usage limits logic (Free vs Premium tier simulated fields).
+### 3. Dashboard UI & Aesthetic Improvements (Recent Updates)
+- Diagnosed and fixed runtime white-screen errors in the Dashboard component.
+- Implemented dynamic date calculations in the `Dashboard.jsx` header (e.g., `SATURDAY, SEPTEMBER 26, 2026`).
+- Refined header UI by removing unnecessary notification icons.
+- Improved UX by moving the Dark Mode toggle from the sidebar to the top-right header, successfully preserving global CSS root variables and localStorage synchronization.
 
-### Phase 4: Core Feature Implementation
-- **Resume Analyzer & Parser**: Implement UI to drag-and-drop PDF/DOCX (using libraries like `pdfjs-dist`), and feed text to AI for a structured JSON response (Score, Skills, Formatting).
-- **Job Tracker**: Create a Kanban-style drag-and-drop or table for users to track applied jobs in Firestore.
-- **AI Chat Assistant**: A persistent chat component using the Context API for context-awareness.
+### 4. User Account & Settings Management (Recent Updates)
+- Added an interactive user account popup menu in the sidebar (`Edit Profile`, `Change Password`, `Logout`).
+- **Edit Profile Modal**: Developed a styled React modal to securely update User Name and Email parameters. 
+- **Change Password Modal**: Developed a styled React modal to securely update user passwords (validating current password and confirming new password rules).
+- **Backend API Integration**: Created new secure `PUT` endpoints (`/api/user/profile` and `/api/user/password`) in `backend/app.py` to seamlessly execute SQLite database updates.
 
-### Phase 5: Polish & Testing
-- Implement retry logic and robust error toasts.
-- Setup **Vitest + React Testing Library** for unit tests.
-- Setup **Cypress** for essential E2E testing of the authentication and upload flow.
+### 5. Core Application Pages
+- Built custom UIs for `ResumeBuilder.jsx`, `SkillAnalysis.jsx`, `InterviewPrep.jsx`, and `Roadmap.jsx`.
+- Connected data fetching from backend analytics endpoints (e.g., `/api/dashboard`).
 
-## Open Questions
+## Verification & Testing
 
-1. **Document Parsing**: Parsing PDFs entirely on the frontend can sometimes miss complex formatting. Do you want to use a pure frontend library (e.g., `pdfjs`) or are we open to using an API service for document extraction?
-2. **Next.js vs Vite**: The plan suggests a React + Vite SPA, given Firebase is used. Next.js could be used for secure, serverless API routes to hide your AI API keys. Would you prefer Next.js instead of Vite?
+### Automated Checks
+- **Build Validation**: Verified that `npm run build` compiles clean without JSX or syntax errors (exits with code `0`).
+- **E2E Testing**: Cypress configuration initialized (`cypress/support/e2e.js` restored/configured) for future end-to-end testing flows.
 
-## Verification Plan
-
-### Automated Tests
-- Run `npm run test` (Vitest) to check the Service Layer and Agent workflows.
-- Run `npx cypress run` to verify login, routing, and upload features.
-
-### Manual Verification
-- We will verify the UI aesthetics on desktop and mobile.
-- Complete a test flow: Uploading a sample resume and verifying the Agent orchestrator appropriately routes to `ResumeAgent` and updates Firebase seamlessly.
+### Manual Verification Status
+- UI aesthetics verified on desktop view without breaking page flow.
+- Modals successfully prevent page reloads, display loading states, and validate empty/mismatched fields.
+- Dark mode persists across local sessions seamlessly.
