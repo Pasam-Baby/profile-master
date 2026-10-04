@@ -184,6 +184,13 @@ def send_reset_email(email, reset_url):
         return False
 
 
+@app.route('/')
+def home():
+    return jsonify({
+        "status": "online",
+        "message": "ProfileMaster Backend API is running successfully!"
+    })
+
 # Auth Endpoints
 @app.route('/api/register', methods=['POST'])
 def register():
