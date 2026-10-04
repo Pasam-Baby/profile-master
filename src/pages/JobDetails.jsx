@@ -24,7 +24,7 @@ export default function JobDetails() {
   }, [id]);
 
   const handleApply = () => {
-    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications', {
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ job_id: parseInt(id), status: 'Applied' })
@@ -33,8 +33,8 @@ export default function JobDetails() {
         .then(() => { setApplied(true); setMessage('Application added to your tracker.'); });
   };
 
-      const handleSave = () => fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/saved_jobs', { method: 'POST', body: JSON.stringify({ job_id: parseInt(id) }) }).then(() => { setSaved(true); setMessage('Job saved to your opportunities.'); });
-      const handleTrack = () => fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications', { method: 'POST', body: JSON.stringify({ job_id: parseInt(id), status: 'Saved', source: job.source || 'ProfileMaster Jobs' }) }).then(() => setMessage('Job added to your application pipeline.'));
+      const handleSave = () => fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/saved_jobs`, { method: 'POST', body: JSON.stringify({ job_id: parseInt(id) }) }).then(() => { setSaved(true); setMessage('Job saved to your opportunities.'); });
+      const handleTrack = () => fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications`, { method: 'POST', body: JSON.stringify({ job_id: parseInt(id), status: 'Saved', source: job.source || 'ProfileMaster Jobs' }) }).then(() => setMessage('Job added to your application pipeline.'));
 
   if (!job) return <div className="text-center" style={{ padding: '5rem', color: 'var(--text-secondary)' }}>Loading job...</div>;
 

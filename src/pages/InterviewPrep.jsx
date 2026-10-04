@@ -53,7 +53,7 @@ export default function InterviewPrep() {
   const [topics, setTopics] = useState([]);
 
   useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume').then(response => response.json()).then(data => {
+    fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resume`).then(response => response.json()).then(data => {
       setResume(data || {});
       const resumeSkills = (data?.skills || '').split(',').map(skill => skill.trim()).filter(Boolean);
       setSkills(resumeSkills);

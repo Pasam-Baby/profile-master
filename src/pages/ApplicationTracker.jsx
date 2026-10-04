@@ -44,8 +44,8 @@ export default function ApplicationTracker() {
   const refresh = () => {
     setLoading(true);
     Promise.all([
-      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications').then(res => res.json()),
-      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications/analytics').then(res => res.json())
+      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications`).then(res => res.json()),
+      fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/applications/analytics`).then(res => res.json())
     ]).then(([data, stats]) => {
       setApplications(Array.isArray(data) ? data : []);
       setAnalytics(stats || { by_status: {}, by_source: {}, by_month: {}, interview_conversion: 0 });
